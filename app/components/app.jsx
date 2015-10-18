@@ -1,10 +1,7 @@
 import React from 'react';
 import moviedb from 'lib/moviedb';
+import MovieGrid from 'components/MovieGrid'
 
-function image(path, size = 'w500'){
-  let baseURL = 'http://image.tmdb.org/t/p';
-  return [baseURL, size, path].join('/');
-}
 
 export default class App extends React.Component {
   constructor() {
@@ -26,20 +23,11 @@ export default class App extends React.Component {
   }
 
   render() {
-    console.log('MOVIES', this.state.movies);
-
-    let items = this.state.movies.map((m) => {
-      return (
-        <li key={m.id} style={{float: 'left'}}>
-          <img src={image(m.poster_path)} width='100' />
-        </li>
-      );
-    });
 
     return (
       <div className='App'>
         <h1>Movie Board</h1>
-        <ul className='MovieGrid'>{items}</ul>
+        <MovieGrid movies={this.state.movies} />
       </div>
     );
   }
