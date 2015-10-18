@@ -17,7 +17,8 @@ process.env.BABEL_ENV = TARGET;
 var common = {
   entry: APP_PATH,
   resolve: {
-    extensions: ['', '.js', '.jsx']
+    extensions: ['', '.js', '.jsx'],
+    modulesDirectories: ["node_modules", APP_PATH]
   },
   output: {
     path: BUILD_PATH,

@@ -1,5 +1,6 @@
-import React from 'react';
 import App from './components/app';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 main();
 
@@ -8,5 +9,5 @@ function main() {
 
   document.body.appendChild(app);
 
-  React.render(<App />, app);
+  ReactDOM.render(<App />, app);
 }
