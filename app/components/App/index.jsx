@@ -1,7 +1,7 @@
 import React from 'react';
 import moviedb from 'lib/moviedb';
 import MovieGrid from 'components/MovieGrid';
-import styles from './App.css';
+import styles from './style.scss';
 
 
 export default class App extends React.Component {

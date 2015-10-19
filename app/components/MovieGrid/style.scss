@@ -1,9 +1,9 @@
 .MovieGrid {
   display: flex;
   flex-wrap: wrap;
-}
 
-.MovieGrid > * {
-  width: 100px;
-  padding: 10px
+  > * {
+    width: 100px;
+    padding: 10px
+  }
 }

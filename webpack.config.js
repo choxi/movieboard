@@ -27,9 +27,9 @@ var common = {
   module: {
     loaders: [
       {
-        test: /.*\.css$/,
+        test: /.*\.scss$/,
         include: APP_PATH,
-        loader: 'style-loader!css-loader!cssnext-loader',
+        loader: 'style-loader!css-loader!autoprefixer!sass-loader',
       },
       {
         test: /\.jsx?$/,
