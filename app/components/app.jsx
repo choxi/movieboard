@@ -1,11 +1,9 @@
 import React from 'react';
 import moviedb from 'lib/moviedb';
 import MovieGrid from 'components/MovieGrid';
-import CSSModules from 'react-css-modules';
 import styles from './App.css';
 
 
-@CSSModules(styles)
 export default class App extends React.Component {
   constructor() {
     super();
@@ -29,12 +27,9 @@ export default class App extends React.Component {
 
     return (
       <div className='App'>
-        <h1 styleName='title' >Movie Board</h1>
+        <h1 className='title'>Movie Board</h1>
         <MovieGrid movies={this.state.movies} />
       </div>
     );
   }
 }
-
-CSSModules(App, styles);
-

@@ -1,0 +1,8 @@
+.MovieGrid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.MovieGrid > * {
+  width: 100px;
+}

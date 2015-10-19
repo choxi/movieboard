@@ -1,5 +1,6 @@
 import React from 'react';
 import MoviePoster from './MoviePoster';
+import styles from './MovieGrid.css';
 
 export default class MovieGrid extends React.Component {
   render() {

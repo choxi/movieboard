@@ -29,7 +29,7 @@ var common = {
       {
         test: /.*\.css$/,
         include: APP_PATH,
-        loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!cssnext-loader'),
+        loader: 'style-loader!css-loader!cssnext-loader',
       },
       {
         test: /\.jsx?$/,
@@ -52,6 +52,10 @@ var common = {
 if(TARGET === 'start' || !TARGET) {
   module.exports = merge(common, {
     devtool: 'eval-source-map',
+    entry: [
+      'webpack-hot-middleware/client',
+      APP_PATH
+    ],
     devServer: {
       historyApiFallback: true,
       hot: true,
