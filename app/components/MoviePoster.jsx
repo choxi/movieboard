@@ -9,6 +9,7 @@ export default class MoviePoster extends React.Component {
     return (
       <article className='MoviePoster' {...this.props}>
         <img src={imageUrl(m.poster_path)} />
+        <h1>{m.title}</h1>
       </article>
     );
   }

@@ -1,3 +1,8 @@
+.MoviePoster h1 {
+  font-size: 12px;
+  color: white;
+}
+
 .MoviePoster img {
   display: block;
   max-width: 100px;
