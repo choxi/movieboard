@@ -27,6 +27,11 @@ var common = {
   module: {
     loaders: [
       {
+        test: /.*\.css$/,
+        include: APP_PATH,
+        loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!cssnext-loader'),
+      },
+      {
         test: /\.jsx?$/,
         loaders: ['babel'],
         include: APP_PATH
@@ -36,6 +41,10 @@ var common = {
   plugins: [
     new HtmlwebpackPlugin({
       title: 'Kanban app'
+    }),
+
+    new ExtractTextPlugin('app.css', {
+        allChunks: true
     })
   ]
 };
@@ -43,14 +52,6 @@ var common = {
 if(TARGET === 'start' || !TARGET) {
   module.exports = merge(common, {
     devtool: 'eval-source-map',
-    module: {
-      loaders: [
-        {
-          test: /\.css$/,
-          loaders: ['style', 'css']
-        }
-      ]
-    },
     devServer: {
       historyApiFallback: true,
       hot: true,
