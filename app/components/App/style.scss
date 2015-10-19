@@ -1,5 +1,10 @@
 @import '~normalize.css';
 
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   background: black;
   font-family: Helvetica Neue, sans-serif;

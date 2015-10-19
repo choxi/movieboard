@@ -11,7 +11,10 @@ export default class MoviePoster extends React.Component {
     const m = this.props.movie;
 
     return (
-      <article className='MoviePoster' {...this.props}>
+      <article
+        className='MoviePoster'
+        style={{width: `${this.props.width}px`}}
+        {...this.props}>
         <img src={imageUrl(m.poster_path)} />
         <h1>{m.title}</h1>
         <p>{year(m.release_date)}</p>
@@ -20,4 +23,7 @@ export default class MoviePoster extends React.Component {
   }
 }
 
-MoviePoster.propTypes = { movie: React.PropTypes.object.isRequired }
+MoviePoster.propTypes = {
+  movie: React.PropTypes.object.isRequired,
+  width: React.PropTypes.number
+}

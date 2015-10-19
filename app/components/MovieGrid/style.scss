@@ -1,9 +1,19 @@
 .MovieGrid {
-  display: flex;
-  flex-wrap: wrap;
 
-  > * {
-    width: 100px;
-    padding: 10px
+  .controls {
+    margin-bottom: 20px;
+  }
+
+  .Slider {
+    width: 200px;
+  }
+
+  > .items {
+    display: flex;
+    flex-wrap: wrap;
+
+    > * {
+      padding: 10px
+    }
   }
 }
