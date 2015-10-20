@@ -6,4 +6,4 @@ A test application of webpack + react + flux
 
 - `npm install`
 - `npm run start`
-- open http://localhost:8080/webpack-dev-server/
+- open [http://localhost:8080/webpack-dev-server/](http://localhost:8080/webpack-dev-server/)
