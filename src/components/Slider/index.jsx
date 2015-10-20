@@ -1,5 +1,6 @@
 import React, {PropTypes} from 'react';
 import ReactDOM from 'react-dom';
+import { noop } from 'lodash';
 import style from './style.scss';
 
 
@@ -24,7 +25,7 @@ export default class Slider extends React.Component {
     this.props.onChange(normalize(xPercent, this.props.min, this.props.max));
   }
 
-  calculateLeft(){
+  calculateLeft() {
     let numerator = this.props.value - this.props.min;
     let denominator = this.props.max - this.props.min;
     return numerator / denominator * 100;
@@ -41,7 +42,7 @@ Slider.propTypes = {
 }
 
 Slider.defaultProps = {
-  onChange: () => {},
+  onChange: noop,
   min: 0,
   max: 100,
 }
