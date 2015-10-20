@@ -1,18 +1,11 @@
 var path = require('path');
 var webpack = require('webpack');
-var HtmlwebpackPlugin = require('html-webpack-plugin');
 var merge = require('webpack-merge');
 var Clean = require('clean-webpack-plugin');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-var pkg = require('./package.json');
-
-var TARGET = process.env.npm_lifecycle_event;
 var ROOT_PATH = path.resolve(__dirname);
-var SRC_PATH = path.resolve(ROOT_PATH, 'app');
-var BUILD_PATH = path.resolve(ROOT_PATH, 'build');
-
-process.env.BABEL_ENV = TARGET;
+var SRC_PATH = path.resolve(ROOT_PATH, 'src');
+var BUILD_PATH = path.resolve(ROOT_PATH, 'dist');
 
 var common = {
   entry: SRC_PATH,
@@ -22,7 +15,8 @@ var common = {
   },
   output: {
     path: BUILD_PATH,
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    publicPath: '/static/'
   },
   module: {
     loaders: [
@@ -37,75 +31,40 @@ var common = {
         include: SRC_PATH
       }
     ]
-  },
-  plugins: [
-    new HtmlwebpackPlugin({
-      title: 'Kanban app'
-    }),
-
-    new ExtractTextPlugin('app.css', {
-        allChunks: true
-    })
-  ]
+  }
 };
 
-if(TARGET === 'start' || !TARGET) {
+if(process.env.NODE_ENV === 'development') {
   module.exports = merge(common, {
     devtool: 'eval-source-map',
     entry: [
       'webpack-hot-middleware/client',
       SRC_PATH
     ],
-    devServer: {
-      historyApiFallback: true,
-      hot: true,
-      inline: true,
-      progress: true
-    },
     plugins: [
-      new webpack.HotModuleReplacementPlugin()
+      new webpack.HotModuleReplacementPlugin(),
+      new webpack.NoErrorsPlugin()
     ]
   });
 }
 
-if(TARGET === 'build' || TARGET === 'stats') {
+if(process.env.NODE_ENV === 'production') {
   module.exports = merge(common, {
-    entry: {
-      app: SRC_PATH,
-      vendor: Object.keys(pkg.dependencies)
-    },
-    output: {
-      path: BUILD_PATH,
-      filename: '[name].[chunkhash].js'
-    },
     devtool: 'source-map',
-    module: {
-      loaders: [
-        {
-          test: /\.css$/,
-          loader: ExtractTextPlugin.extract('style', 'css'),
-          include: SRC_PATH
-        }
-      ]
-    },
+    entry: SRC_PATH,
     plugins: [
-      new Clean(['build']),
-      new ExtractTextPlugin('styles.[chunkhash].css'),
-      new webpack.optimize.CommonsChunkPlugin(
-        'vendor',
-        '[name].[chunkhash].js'
-      ),
+      new Clean(['dist']),
+      new webpack.optimize.OccurenceOrderPlugin(),
       new webpack.DefinePlugin({
         'process.env': {
-          // This affects react lib size
           'NODE_ENV': JSON.stringify('production')
         }
       }),
       new webpack.optimize.UglifyJsPlugin({
-        compress: {
+        compressor: {
           warnings: false
         }
       })
-    ]
+    ],
   });
 }
