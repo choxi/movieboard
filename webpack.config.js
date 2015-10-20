@@ -9,16 +9,16 @@ var pkg = require('./package.json');
 
 var TARGET = process.env.npm_lifecycle_event;
 var ROOT_PATH = path.resolve(__dirname);
-var APP_PATH = path.resolve(ROOT_PATH, 'app');
+var SRC_PATH = path.resolve(ROOT_PATH, 'app');
 var BUILD_PATH = path.resolve(ROOT_PATH, 'build');
 
 process.env.BABEL_ENV = TARGET;
 
 var common = {
-  entry: APP_PATH,
+  entry: SRC_PATH,
   resolve: {
     extensions: ['', '.js', '.jsx'],
-    modulesDirectories: ["node_modules", APP_PATH]
+    modulesDirectories: ["node_modules", SRC_PATH]
   },
   output: {
     path: BUILD_PATH,
@@ -28,13 +28,13 @@ var common = {
     loaders: [
       {
         test: /.*\.scss$/,
-        include: APP_PATH,
+        include: SRC_PATH,
         loader: 'style-loader!css-loader!autoprefixer!sass-loader',
       },
       {
         test: /\.jsx?$/,
         loaders: ['babel'],
-        include: APP_PATH
+        include: SRC_PATH
       }
     ]
   },
@@ -54,7 +54,7 @@ if(TARGET === 'start' || !TARGET) {
     devtool: 'eval-source-map',
     entry: [
       'webpack-hot-middleware/client',
-      APP_PATH
+      SRC_PATH
     ],
     devServer: {
       historyApiFallback: true,
@@ -71,7 +71,7 @@ if(TARGET === 'start' || !TARGET) {
 if(TARGET === 'build' || TARGET === 'stats') {
   module.exports = merge(common, {
     entry: {
-      app: APP_PATH,
+      app: SRC_PATH,
       vendor: Object.keys(pkg.dependencies)
     },
     output: {
@@ -84,7 +84,7 @@ if(TARGET === 'build' || TARGET === 'stats') {
         {
           test: /\.css$/,
           loader: ExtractTextPlugin.extract('style', 'css'),
-          include: APP_PATH
+          include: SRC_PATH
         }
       ]
     },
