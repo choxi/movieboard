@@ -14,7 +14,7 @@
     border-radius: 10px;
     position: absolute;
     top: 50%;
-    margin-top: -6px;
-    margin-left: -6px;
+    transform: translate(-50%, -50%);
+    transition: left 100ms linear;
   }
 }

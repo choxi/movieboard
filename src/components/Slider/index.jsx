@@ -69,6 +69,8 @@ function validateValue(props, propName, componentName) {
 
 function normalize(floatValue, min, max) {
   let range = max - min;
-  return floatValue * range + min;
+  let normalizedValue = floatValue * range + min;
+  // cleverly restrict the value be between the min and max
+  return [min, normalizedValue, max].sort()[1];
 }
 
