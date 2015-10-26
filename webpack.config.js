@@ -34,6 +34,9 @@ var common = {
   }
 };
 
+// default to common
+module.exports = common;
+
 if(process.env.NODE_ENV === 'development') {
   module.exports = merge(common, {
     devtool: 'eval-source-map',

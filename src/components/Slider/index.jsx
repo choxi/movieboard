@@ -3,11 +3,19 @@ import ReactDOM from 'react-dom';
 import { noop } from 'lodash';
 import style from './style.scss';
 
-
 export default class Slider extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { value: props.initialValue };
+  }
+
   render() {
     return (
-      <div className='Slider' onClick={this.handleClick.bind(this)}>
+      <div
+        className='Slider'
+        onClick={this.handleClick.bind(this)}
+        {...this.props}
+      >
         <div
           className='handle'
           style={{left: `${this.calculateLeft()}%`}}>
@@ -26,7 +34,7 @@ export default class Slider extends React.Component {
   }
 
   calculateLeft() {
-    let numerator = this.props.value - this.props.min;
+    let numerator = this.state.value - this.props.min;
     let denominator = this.props.max - this.props.min;
     return numerator / denominator * 100;
   }
@@ -35,10 +43,14 @@ export default class Slider extends React.Component {
 // Proptypes
 // ----------------------------------------------------------------------------
 Slider.propTypes = {
+  // Callback for when the value changes.
   onChange: PropTypes.func,
+  // The value for when the slider is at 0%
   min: PropTypes.number,
+  // The value for when the slider is at 100%
   max: PropTypes.number,
-  value: validateValue,
+  // The starting value
+  initialValue: validateValue,
 }
 
 Slider.defaultProps = {
