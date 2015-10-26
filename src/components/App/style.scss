@@ -12,9 +12,46 @@ body {
   padding: 20px;
 }
 
-.title {
-  color: red;
-  font-weight: 300;
-  text-transform: uppercase;
+
+.MainHeader {
+  display: flex;
+  align-items: center;
+  padding: 20px 0 40px;
+
+  .title {
+    color: red;
+    font-weight: 300;
+    text-transform: uppercase;
+    margin: 0 20px 0 0;
+  }
 }
 
+
+.MainNav {
+  display: flex;
+  align-items: center;
+
+  a {
+    color: #999;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 10px;
+
+    &.isActive {
+      color: white;
+      position: relative;
+
+      &::after {
+        content: ' ';
+        display: block;
+        height: 4px;
+        background: white;
+        position: absolute;
+        bottom: -2px;
+        left: 10px;
+        right: 10px;
+      }
+    }
+  }
+}

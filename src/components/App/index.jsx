@@ -27,7 +27,13 @@ export default class App extends React.Component {
 
     return (
       <div className='App'>
-        <h1 className='title'>Movie Board</h1>
+        <header className='MainHeader'>
+          <h1 className='title'>Movie Board</h1>
+          <nav className='MainNav'>
+            <a href='#' className='isActive'>Explore</a>
+            <a href='#'>My Movies</a>
+          </nav>
+        </header>
         <MovieGrid movies={this.state.movies} />
       </div>
     );

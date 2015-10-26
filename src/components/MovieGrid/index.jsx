@@ -7,7 +7,7 @@ export default class MovieGrid extends React.Component {
   constructor() {
     super();
     this.state = {
-      posterWidth: 100
+      posterWidth: 200
     };
   }
 
@@ -20,7 +20,7 @@ export default class MovieGrid extends React.Component {
             max={500}
             value={this.state.posterWidth}
             onChange={this.onSliderChange.bind(this)}
-            />
+          />
         </div>
         <div className='items'>
           {this.props.movies.map(this.renderMovie.bind(this))}
