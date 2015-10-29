@@ -39,6 +39,7 @@
     "karma-tap": "^1.0.3",
     "karma-webpack": "^1.7.0",
     "mocha": "^2.3.3",
+    "nightwatch": "^0.8.6",
     "phantomjs": "^1.9.18",
     "phantomjs-polyfill": "0.0.1",
     "react-addons-test-utils": "^0.14.0",

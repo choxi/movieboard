@@ -1,7 +1,33 @@
 .MovieGrid {
 
-  .controls {
+  .Controls {
     margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .Controls-left {
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .Controls-right {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+
+  .Search {
+    background: #444;
+    border: solid 1px #666;
+    border-radius: 15px;
+    line-height: 30px;
+    padding: 0 10px;
+    color: #aaa;
+
+    &:focus {
+      outline: none;
+    }
   }
 
   .Slider {

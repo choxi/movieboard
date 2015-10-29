@@ -14,13 +14,18 @@ export default class MovieGrid extends React.Component {
   render() {
     return (
       <div className='MovieGrid'>
-        <div className="controls">
-          <Slider
-            min={100}
-            max={500}
-            value={this.state.posterWidth}
-            onChange={this.onSliderChange.bind(this)}
-          />
+        <div className="Controls">
+          <div className="Controls-left">
+            <input className='Search' type="search" placeholder='Search' />
+          </div>
+          <div className="Controls-right">
+            <Slider
+              min={100}
+              max={500}
+              value={this.state.posterWidth}
+              onChange={this.onSliderChange.bind(this)}
+            />
+          </div>
         </div>
         <div className='items'>
           {this.props.movies.map(this.renderMovie.bind(this))}

@@ -1,23 +1,37 @@
+'use strict';
+
 const gulp = require('gulp');
 const nightwatch = require('gulp-nightwatch');
 const server = require('gulp-develop-server');
 
 const Karma = require('karma').Server;
 
+let TEST_SERVER_RUNNING = false;
+
 // ---------------------------------------------------------------------------
 // starting the Dev Server
 // ---------------------------------------------------------------------------
 gulp.task('devserver', function (done) {
-  if (server.running) {
+  server.listen({
+    path: __dirname + '/devServer.js',
+    env: { 'NODE_ENV': 'development' }
+  }, done)
+})
+
+gulp.task('testserver', function (done) {
+  if (TEST_SERVER_RUNNING) {
     done();
     return;
   }
 
   server.listen({
     path: __dirname + '/devServer.js',
-    env: { 'NODE_ENV': 'development' }
+    env: {
+      NODE_ENV: 'test',
+      PORT: '8090'
+    }
   }, function() {
-    server.running = true;
+    TEST_SERVER_RUNNING = true;
     done()
   })
 })
@@ -50,8 +64,9 @@ gulp.task('tdd', function (done) {
 });
 
 // run all acceptance tests
-gulp.task('test:nightwatch', ['devserver'], function() {
+gulp.task('test:nightwatch', ['testserver'], function() {
   return gulp.src('')
+  .on('error', () => {})
   .pipe(nightwatch({
     configFile: 'nightwatch.json',
     cliArgs: ['--env chrome']
@@ -67,7 +82,7 @@ gulp.task('watch', function() {
   gulp.watch(['src/**/*'], ['test:nightwatch'])
 
   // when devServer or webpack change, restart the server
-  gulp.watch(['devServer.js', 'webpack.config.js'], server.restart)
+  gulp.watch(['testserver.js', 'webpack.config.js'], server.restart)
 
   // when acceptance test changes, rerun that test
   gulp.watch('test/browser/**/*.js', function(e) {
@@ -89,11 +104,13 @@ gulp.task('watch', function() {
 // ---------------------------------------------------------------------------
 //
 // Includes
-// - tdd unit tests,
 // - devserver,
-// - acceptance tests
-// - file watching
 // ---------------------------------------------------------------------------
 gulp.task('default', function() {
-  gulp.start('tdd', 'devserver', 'test:nightwatch', 'watch');
+  gulp.start('devserver');
+});
+
+
+gulp.task('test:watch', function() {
+  gulp.start('tdd', 'test:nightwatch', 'watch');
 });

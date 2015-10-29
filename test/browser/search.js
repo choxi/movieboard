@@ -3,6 +3,11 @@ module.exports = {
     browser
       .url("localhost:8080")
       .waitForElementVisible('body', 1000)
-      .end()
+      .setValue('input[type=search]', 'Good Burger')
+
+    browser
+      .expect.element('.MovieGrid').text.to.contain('Good Burger').before(1000)
+
+    browser.end()
   }
 };
