@@ -10,7 +10,7 @@
     "build": "NODE_ENV=production webpack",
     "start": "NODE_ENV=development node devServer.js",
     "lint": "eslint src",
-    "test": "gulp test",
+    "test": "gulp test"
   },
   "author": "",
   "license": "ISC",
@@ -23,8 +23,8 @@
     "css-loader": "^0.20.1",
     "extract-text-webpack-plugin": "^0.8.2",
     "gulp": "^3.9.0",
+    "gulp-develop-server": "^0.4.3",
     "gulp-nightwatch": "^0.2.6",
-    "gulp-nodemon": "^2.0.4",
     "html-webpack-plugin": "^1.6.2",
     "isparta-instrumenter-loader": "^0.2.1",
     "karma": "^0.13.11",

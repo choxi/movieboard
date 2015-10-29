@@ -23,3 +23,6 @@ node_modules
 
 # build output
 dist
+
+# test output
+test/browser/reports

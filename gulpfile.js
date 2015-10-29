@@ -1,31 +1,56 @@
-var gulp = require('gulp');
-var nightwatch = require('gulp-nightwatch');
-var nodemon = require('gulp-nodemon');
+const gulp = require('gulp');
+const nightwatch = require('gulp-nightwatch');
+const server = require('gulp-develop-server');
 
-var Karma = require('karma').Server;
+const Karma = require('karma').Server;
 
-gulp.task('test', function (done) {
-  new Karma({
-    configFile: __dirname + '/karma.conf.js',
-    singleRun: true
-  }, done).start();
-});
+// ---------------------------------------------------------------------------
+// starting the Dev Server
+// ---------------------------------------------------------------------------
+gulp.task('devserver', function (done) {
+  if (server.running) {
+    done();
+    return;
+  }
 
-gulp.task('tdd', function (done) {
-  new Karma({
-    configFile: __dirname + '/karma.conf.js',
-  }, done).start();
-});
-
-gulp.task('devserver', function () {
-  nodemon({
-    script: 'devServer.js',
-    ignore: ["build/*"],
+  server.listen({
+    path: __dirname + '/devServer.js',
     env: { 'NODE_ENV': 'development' }
+  }, function() {
+    server.running = true;
+    done()
   })
 })
 
-gulp.task('nightwatch', ['devserver'], function() {
+// ---------------------------------------------------------------------------
+// TESTING
+// ---------------------------------------------------------------------------
+
+// run all unit tests once
+gulp.task('test:unit', function (done) {
+  new Karma({
+    configFile: __dirname + '/karma.conf.js',
+    singleRun: true,
+    reporters: [
+      'spec',
+      'coverage'
+    ]
+  }, done).start();
+});
+
+// run all unit tests and watch them for changes
+gulp.task('tdd', function (done) {
+  new Karma({
+    configFile: __dirname + '/karma.conf.js',
+    reporters: [
+      'dots',
+      'coverage'
+    ]
+  }, done).start();
+});
+
+// run all acceptance tests
+gulp.task('test:nightwatch', ['devserver'], function() {
   return gulp.src('')
   .pipe(nightwatch({
     configFile: 'nightwatch.json',
@@ -34,10 +59,41 @@ gulp.task('nightwatch', ['devserver'], function() {
 });
 
 
+// ---------------------------------------------------------------------------
+// Watching files
+// ---------------------------------------------------------------------------
 gulp.task('watch', function() {
-  gulp.watch('test/browser/**/*.js', ['nightwatch'])
+  // when src files change, run full acceptance suite
+  gulp.watch(['src/**/*'], ['test:nightwatch'])
+
+  // when devServer or webpack change, restart the server
+  gulp.watch(['devServer.js', 'webpack.config.js'], server.restart)
+
+  // when acceptance test changes, rerun that test
+  gulp.watch('test/browser/**/*.js', function(e) {
+    gulp
+      .src(e.path)
+      .pipe(nightwatch({
+        configFile: 'nightwatch.json',
+        cliArgs: {
+          env: 'chrome',
+          test: e.path
+        }
+      }));
+  })
 })
 
+
+// ---------------------------------------------------------------------------
+// Default Task
+// ---------------------------------------------------------------------------
+//
+// Includes
+// - tdd unit tests,
+// - devserver,
+// - acceptance tests
+// - file watching
+// ---------------------------------------------------------------------------
 gulp.task('default', function() {
-  gulp.start('tdd', 'nightwatch', 'watch');
+  gulp.start('tdd', 'devserver', 'test:nightwatch', 'watch');
 });
