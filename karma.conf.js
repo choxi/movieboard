@@ -64,8 +64,6 @@ module.exports = function karmaConfig (config) {
       // 'Chrome'
     ],
 
-    singleRun: true,
-
     // Configure code coverage reporter
     coverageReporter: {
       dir: 'build/coverage/',
