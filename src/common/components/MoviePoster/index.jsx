@@ -1,5 +1,5 @@
 import React from 'react';
-import { imageUrl } from 'lib/moviedb';
+import { imageUrl } from '../../lib/moviedb';
 import styles from './style.scss';
 
 function year(releaseString) {

@@ -5,10 +5,11 @@ var Clean = require('clean-webpack-plugin');
 
 var ROOT_PATH = path.resolve(__dirname);
 var SRC_PATH = path.resolve(ROOT_PATH, 'src');
+var CLIENT_PATH = path.resolve(SRC_PATH, 'client', 'index');
 var BUILD_PATH = path.resolve(ROOT_PATH, 'dist');
 
 var common = {
-  entry: SRC_PATH,
+  entry: CLIENT_PATH,
   resolve: {
     extensions: ['', '.js', '.jsx'],
     modulesDirectories: ["node_modules", SRC_PATH]
@@ -27,8 +28,26 @@ var common = {
       },
       {
         test: /\.jsx?$/,
-        loaders: ['babel'],
-        include: SRC_PATH
+        loader: 'babel',
+        include: SRC_PATH,
+        query: {
+          optional: ['runtime'],
+          stage: 0,
+          env: {
+            development: {
+              plugins: ["react-transform"],
+              extra: {
+                "react-transform": {
+                  transforms: [{
+                    transform: "react-transform-hmr",
+                    imports: ["react"],
+                    locals: ["module"]
+                  }]
+                }
+              }
+            }
+          }
+        }
       }
     ]
   }
@@ -42,7 +61,7 @@ if(process.env.NODE_ENV === 'development') {
     devtool: 'eval-source-map',
     entry: [
       'webpack-hot-middleware/client',
-      SRC_PATH
+      CLIENT_PATH
     ],
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
@@ -54,7 +73,7 @@ if(process.env.NODE_ENV === 'development') {
 if(process.env.NODE_ENV === 'production') {
   module.exports = merge(common, {
     devtool: 'source-map',
-    entry: SRC_PATH,
+    entry: CLIENT_PATH,
     plugins: [
       new Clean(['dist']),
       new webpack.optimize.OccurenceOrderPlugin(),

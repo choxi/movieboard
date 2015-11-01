@@ -1,6 +1,7 @@
 'use strict';
 
 const gulp = require('gulp');
+const nodemon = require('gulp-nodemon');
 const nightwatch = require('gulp-nightwatch');
 const server = require('gulp-develop-server');
 
@@ -12,9 +13,10 @@ let TEST_SERVER_RUNNING = false;
 // starting the Dev Server
 // ---------------------------------------------------------------------------
 gulp.task('devserver', function (done) {
-  server.listen({
-    path: __dirname + '/devServer.js',
-    env: { 'NODE_ENV': 'development' }
+  nodemon({
+    script: 'src/server/index.js'
+  , watch: 'src'
+  , env: { 'NODE_ENV': 'development' }
   }, done)
 })
 
