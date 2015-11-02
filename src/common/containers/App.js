@@ -16,7 +16,6 @@ class App extends Component {
 function mapStateToProps(state) {
   return {
     version : state.version,
-  	movies : state.movies,
   };
 }
 
@@ -24,4 +23,4 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(dispatch);
 }
 
-export default App;
+export default connect(mapStateToProps)(App);

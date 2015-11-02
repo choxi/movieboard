@@ -8,6 +8,12 @@ export function imageUrl(path, size = 'w500'){
   return [baseURL, size, path].join('/');
 }
 
-export default function moviedb(path) {
-  return axios.get(`${MOVIE_DB_API}${path}?api_key=${API_KEY}`);
+export default function moviedb(path, params = {}) {
+  if(!path) {
+    throw new Error('moviedb API error, a path is required');
+  }
+
+  let options = {params: Object.assign({}, params, {api_key: API_KEY})};
+
+  return axios.get(`${MOVIE_DB_API}${path}`, options);
 }

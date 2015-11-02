@@ -30,7 +30,8 @@ export default class Slider extends React.Component {
     let {clientX, clientY} = e;
     let {offsetLeft, offsetWidth} = node;
     let xPercent = (clientX - offsetLeft) / offsetWidth;
-    this.props.onChange(normalize(xPercent, this.props.min, this.props.max));
+    this.state.value = normalize(xPercent, this.props.min, this.props.max);
+    this.props.onChange(this.state.value);
   }
 
   calculateLeft() {

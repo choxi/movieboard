@@ -1,63 +1,77 @@
+import {keys} from 'lodash';
 import moviedb from '../lib/moviedb';
 
-export const REQUEST_MOVIES = 'REQUEST_MOVIES'
-function requestMovies(query) {
-  return {
-    type: REQUEST_MOVIES,
-    query
+export const SELECT_QUERY = 'SELECT_QUERY';
+export const INVALIDATE_QUERY = 'INVALIDATE_QUERY';
+
+export const MOVIES_GET = 'MOVIES_GET';
+export const MOVIES_GET_REQUEST = 'MOVIES_GET_REQUEST';
+export const MOVIES_GET_SUCCESS = 'MOVIES_GET_SUCCESS';
+export const MOVIES_GET_FAILURE = 'MOVIES_GET_FAILURE';
+
+function queryPayload({path, params}) {
+  let key = queryKey({path, params});
+  return {path, params, key}
+}
+
+export function queryKey({path, params = {}}) {
+  let querystring = keys(params)
+    .sort()
+    .map(key => `${key}=${params[key]}`)
+    .join('&');
+
+  if(querystring.length > 0) {
+    return [path, querystring].join('?');
+  } else {
+    return path;
   }
 }
 
-export const RECEIVE_MOVIES = 'RECEIVE_MOVIES'
-function receiveMovies(query, data) {
-  let {movies, total_pages, total_results} = data;
+export function selectQuery(query) {
   return {
-    type: RECEIVE_MOVIES,
-    query,
-    movies,
-    total_pages,
-    total_results,
-    receivedAt: Date.now()
-  }
+    type: SELECT_QUERY,
+    query: queryPayload(query),
+  };
 }
 
-function fetchMovies(query) {
-  return dispatch => {
-    dispatch(requestMovies(query))
-    return moviedb(query)
-      .then(response => response.data)
-      .then(data => dispatch(receiveMovies(query, data)))
+export function invalidateQuery(query) {
+  return {
+    type: INVALIDATE_QUERY,
+    query: query
+  };
+}
+
+export function fetchMovies(query = {path: '/discover/movie', params: {}}) {
+  return {
+    type: MOVIES_GET,
+    query: queryPayload(query),
+    promise: moviedb(query.path, query.params)
   }
 }
 
 function shouldFetchMovies(state, query) {
-  const movies = state.moviesByQuery[query]
+  const movies = state.moviesByQuery[queryKey(query)];
   if (!movies) {
-    return true
+    return true;
   } else if (movies.isFetching) {
-    return false
+    return false;
   } else {
-    return movies.didInvalidate
+    return movies.didInvalidate;
+  }
+}
+
+export function search(text) {
+  return (dispatch) => {
+    let query = queryPayload({path: '/search/movie', params: {query: text}})
+    dispatch(selectQuery(query))
   }
 }
 
 export function fetchMoviesIfNeeded(query) {
 
-  // Note that the function also receives getState()
-  // which lets you choose what to dispatch next.
-
-  // This is useful for avoiding a network request if
-  // a cached value is already available.
-
   return (dispatch, getState) => {
     if (shouldFetchMovies(getState(), query)) {
-      // Dispatch a thunk from thunk!
-      return dispatch(fetchMovies(query))
-    } else {
-      // Let the calling code know there's nothing to wait for.
-      return Promise.resolve()
+      return dispatch(fetchMovies(query));
     }
-  }
+  };
 }
-
-

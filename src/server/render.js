@@ -3,10 +3,10 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import config from './config';
 import configureStore from '../common/store/configureStore';
-import routes from '../common/routes';
+// import routes from '../common/routes';
 import serialize from 'serialize-javascript';
-import {Provider} from 'react-redux';
-import {RoutingContext, match} from 'react-router';
+// import {Provider} from 'react-redux';
+// import {RoutingContext, match} from 'react-router';
 import createLocation from 'history/lib/createLocation';
 
 export default function render(req, res, next) {
@@ -16,36 +16,33 @@ export default function render(req, res, next) {
 
   const store = configureStore(initialState);
 
-  const location = createLocation(req.url);
+  // const location = createLocation(req.url);
 
-  match({routes, location}, (error, redirectLocation, renderProps) => {
-
-
-    if (redirectLocation) {
-      res.redirect(301, redirectLocation.pathname + redirectLocation.search);
-      return;
-    }
-
-    if (error) {
-      next(error);
-      return;
-    }
-
-    fetchComponentData(store.dispatch, req, renderProps)
-      .then(() => renderPage(store, renderProps, req))
-      .then(html => res.send(html))
-      .catch(next);
-  });
+  // match({ routes, location }, (err, redirectLocation, renderProps) => {
+  //
+  //   if(err) {
+  //     console.error(err);
+  //     return res.status(500).end('Internal server error');
+  //   }
+  //
+  //   if(!renderProps)
+  //     return res.status(404).end('Not found');
+  //
+    res.send(renderPage(store, null, req));
+    // fetchComponentData(store.dispatch, renderProps.components, renderProps.params)
+    //   .then(() => renderPage(store, renderProps, req))
+    //   .then(html => res.send(html))
+    //   .catch(next);
+  // });
 }
 
-function fetchComponentData(dispatch, req, renderProps) {
-  let components = renderProps && renderProps.components || [];
+function fetchComponentData(dispatch, components, params) {
+  const needs = components.reduce( (prev, current) => {
+    const parentNeeds = (current.WrappedComponent ?
+                         current.WrappedComponent.need : []);
 
-  const needs = components.reduce((prev, current) => {
-    return (current.need || [])
-      .concat((current.WrappedComponent ? current.WrappedComponent.need : []) || [])
-      .concat(prev);
-    }, []);
+    return (current.need || []).concat(parentNeeds || []).concat(prev);
+  }, []);
   const promises = needs.map(need => dispatch(need()));
   return Promise.all(promises);
 }
@@ -53,13 +50,14 @@ function fetchComponentData(dispatch, req, renderProps) {
 function renderPage(store, renderProps, req) {
   const clientState = store.getState();
   const {headers, hostname} = req;
-  const appHtml = getAppHtml(store, renderProps);
+  // const appHtml = getAppHtml(store, renderProps);
+  const appHtml = '';
   const scriptHtml = getScriptHtml(clientState, headers, hostname);
 
   return '<!DOCTYPE html>' + ReactDOMServer.renderToStaticMarkup(
     <Template
       appCssHash={config.assetsHashes.appCss}
-      bodyHtml={`<div id="app">${appHtml}</div>${scriptHtml}`}
+      bodyHtml={`<div id="root">${appHtml}</div>${scriptHtml}`}
       isProduction={config.isProduction}
       title={'MovieBoard'}
     />
@@ -68,7 +66,9 @@ function renderPage(store, renderProps, req) {
 
 function getAppHtml(store, renderProps) {
   return ReactDOMServer.renderToString(
-    <RoutingContext {...renderProps} />
+    <Provider store={store}>
+      <RoutingContext {...renderProps} />
+    </Provider>
   );
 }
 

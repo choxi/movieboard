@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import { devTools } from 'redux-devtools';
-import reduxReactRouter from 'redux-router';
+import { reduxReactRouter } from 'redux-router';
 import thunk from 'redux-thunk';
 import createHistory from 'history/lib/createBrowserHistory';
 import createLogger from 'redux-logger';
@@ -8,30 +8,31 @@ import promiseMiddleware from './promiseMiddleware';
 import rootReducer from '../reducers';
 
 const middlewareBuilder = () => {
+
   let middleware = {};
-  let universalMiddleware = [thunk,promiseMiddleware];
+  let universalMiddleware = [thunk, promiseMiddleware];
   let allComposeElements = [];
 
-  if(process.browser) {
+  if(process.browser){
     if(process.env.NODE_ENV === 'production'){
       middleware = applyMiddleware(...universalMiddleware);
       allComposeElements = [
         middleware,
-        // reduxReactRouter({
-        //   createHistory
-        // })
+        reduxReactRouter({
+          createHistory
+        })
       ]
-    } else {
+    }else{
       middleware = applyMiddleware(...universalMiddleware, createLogger());
       allComposeElements = [
         middleware,
-        // reduxReactRouter({
-        //   createHistory
-        // }),
+        reduxReactRouter({
+          createHistory
+        }),
         devTools()
       ]
     }
-  } else {
+  }else{
     middleware = applyMiddleware(...universalMiddleware);
     allComposeElements = [
       middleware
@@ -39,6 +40,7 @@ const middlewareBuilder = () => {
   }
 
   return allComposeElements;
+
 }
 
 const finalCreateStore = compose(...middlewareBuilder())(createStore);
