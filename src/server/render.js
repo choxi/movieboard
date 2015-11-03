@@ -3,10 +3,10 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import config from './config';
 import configureStore from '../common/store/configureStore';
-// import routes from '../common/routes';
+import routes from '../common/routes';
 import serialize from 'serialize-javascript';
-// import {Provider} from 'react-redux';
-// import {RoutingContext, match} from 'react-router';
+import {Provider} from 'react-redux';
+import {RoutingContext, match} from 'react-router';
 import createLocation from 'history/lib/createLocation';
 
 export default function render(req, res, next) {
@@ -16,24 +16,23 @@ export default function render(req, res, next) {
 
   const store = configureStore(initialState);
 
-  // const location = createLocation(req.url);
+  const location = createLocation(req.url);
 
-  // match({ routes, location }, (err, redirectLocation, renderProps) => {
-  //
-  //   if(err) {
-  //     console.error(err);
-  //     return res.status(500).end('Internal server error');
-  //   }
-  //
-  //   if(!renderProps)
-  //     return res.status(404).end('Not found');
-  //
-    res.send(renderPage(store, null, req));
-    // fetchComponentData(store.dispatch, renderProps.components, renderProps.params)
-    //   .then(() => renderPage(store, renderProps, req))
-    //   .then(html => res.send(html))
-    //   .catch(next);
-  // });
+  match({ routes, location }, (err, redirectLocation, renderProps) => {
+
+    if(err) {
+      console.error(err);
+      return res.status(500).end('Internal server error');
+    }
+
+    if(!renderProps)
+      return res.status(404).end('Not found');
+
+    fetchComponentData(store.dispatch, renderProps.components, renderProps.params)
+      .then(() => renderPage(store, renderProps, req))
+      .then(html => res.send(html))
+      .catch(next);
+  });
 }
 
 function fetchComponentData(dispatch, components, params) {
@@ -50,8 +49,7 @@ function fetchComponentData(dispatch, components, params) {
 function renderPage(store, renderProps, req) {
   const clientState = store.getState();
   const {headers, hostname} = req;
-  // const appHtml = getAppHtml(store, renderProps);
-  const appHtml = '';
+  const appHtml = getAppHtml(store, renderProps);
   const scriptHtml = getScriptHtml(clientState, headers, hostname);
 
   return '<!DOCTYPE html>' + ReactDOMServer.renderToStaticMarkup(

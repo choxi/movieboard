@@ -60,6 +60,13 @@ function shouldFetchMovies(state, query) {
   }
 }
 
+export function discover(params = {}) {
+  return (dispatch) => {
+    let query = queryPayload({path: '/discover/movie', params})
+    dispatch(selectQuery(query))
+  }
+}
+
 export function search(text) {
   return (dispatch) => {
     let query = queryPayload({path: '/search/movie', params: {query: text}})

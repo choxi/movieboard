@@ -6,12 +6,10 @@ import styles from './style.scss';
 export default class Explore extends React.Component {
   componentDidMount() {
     const { selectedQuery } = this.props;
-    console.log('componentDidMount', selectedQuery)
     this.props.actions.fetchMoviesIfNeeded(selectedQuery);
   }
 
    componentWillReceiveProps(nextProps) {
-     console.log('nextProps', nextProps.movies);
      if (nextProps.selectedQuery !== this.props.selectedQuery) {
        const { selectedQuery } = nextProps;
        this.props.actions.fetchMoviesIfNeeded(selectedQuery);
@@ -28,22 +26,20 @@ export default class Explore extends React.Component {
             <a href='#'>My Movies</a>
           </nav>
         </header>
-        <div className="Controls">
-          <div className="Controls-left">
-            <input
-              className='Search'
-              type="search"
-              placeholder='Search'
-              onChange={this.handleSearchChange.bind(this)}
-            />
-          </div>
-        </div>
-        <MovieGrid movies={this.props.movies} />
+        <MovieGrid
+          onSearch={this.handleSearchChange.bind(this)}
+          movies={this.props.movies}
+        />
       </div>
     );
   }
 
   handleSearchChange(e) {
-    this.props.actions.search(e.target.value);
+    let value = e.target.value;
+    if(value) {
+      this.props.actions.search(value);
+    } else {
+      this.props.actions.discover();
+    }
   }
 }

@@ -1,6 +1,6 @@
+import {noop} from 'lodash'
 import React from 'react';
 import MoviePoster from '../MoviePoster';
-import Slider from '../Slider';
 import styles from './style.scss';
 
 export default class MovieGrid extends React.Component {
@@ -14,6 +14,16 @@ export default class MovieGrid extends React.Component {
   render() {
     return (
       <div className='MovieGrid'>
+        <div className="Controls">
+          <div className="Controls-left">
+            <input
+              className='Search'
+              type="search"
+              placeholder='Search'
+              onChange={this.props.onSearch}
+            />
+          </div>
+        </div>
         <div className='items'>
           {this.props.movies.map(this.renderMovie.bind(this))}
         </div>
@@ -35,5 +45,12 @@ export default class MovieGrid extends React.Component {
   }
 }
 
-MovieGrid.propTypes = { movies: React.PropTypes.array }
-MovieGrid.deafultProps = { movies: [] }
+MovieGrid.propTypes = {
+  movies: React.PropTypes.array,
+  onSearch: React.PropTypes.function
+}
+
+MovieGrid.deafultProps = {
+  movies: [],
+  onSearch: noop
+}
