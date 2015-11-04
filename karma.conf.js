@@ -7,15 +7,6 @@ var webpackConfig = merge(baseWebpackConfig, {
   entry: {}, // karma will set this
   output: {}, // karma will set this
   devtool: 'inline-source-map',
-  module: {
-    preLoaders: [
-      {
-        test: /\.jsx?$/,
-        loaders: ['isparta-instrumenter'],
-        include: 'src'
-      }
-    ],
-  }
 });
 
 // Reference: http://karma-runner.github.io/0.13/config/configuration-file.html
@@ -37,10 +28,6 @@ module.exports = function karmaConfig (config) {
       // Reference: https://github.com/mlex/karma-spec-reporter
       // Set reporter to print detailed results to console
       'spec',
-
-      // Reference: https://github.com/karma-runner/karma-coverage
-      // Output code coverage files
-      'coverage'
     ],
 
     files: [
@@ -50,26 +37,20 @@ module.exports = function karmaConfig (config) {
       'node_modules/babel-core/browser-polyfill.js',
 
       // Grab all files in the tests directory that contain test.
-      'src/**/*\.test\.js'
+      {pattern: 'src/**/*\.test\.js', watched: false}
     ],
 
     preprocessors: {
       // Reference: http://webpack.github.io/docs/testing.html
       // Reference: https://github.com/webpack/karma-webpack
       // Convert files with webpack and load sourcemaps
-      'src/**/*\.test\.js': ['webpack', 'sourcemap']
+      'src/**/*\.test\.js': ['webpack', 'sourcemap'],
     },
 
     browsers: [
       'PhantomJS'
       // 'Chrome'
     ],
-
-    // Configure code coverage reporter
-    coverageReporter: {
-      dir: 'build/coverage/',
-      type: 'html'
-    },
 
     // Test webpack config
     webpack: webpackConfig,

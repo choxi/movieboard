@@ -2,7 +2,7 @@ import {
   SELECT_QUERY,
   INVALIDATE_QUERY,
   MOVIES_GET, MOVIES_GET_REQUEST, MOVIES_GET_SUCCESS, MOVIES_GET_FAILURE,
-  queryKey
+  queryPayload
 } from '../actions/movies';
 
 function movies(state = {
@@ -38,19 +38,17 @@ function movies(state = {
   }
 }
 
-export function selectedQuery(state, action) {
-  console.log('selectedQuery', state, action)
-  const defaultState = {
-    key: '/discover/movie',
-    path: '/discover/movie',
-    params: {}
-  };
+const defaultSelectedQuery = queryPayload({
+  path: '/discover/movie',
+  params: {}
+});
 
+export function selectedQuery(state = defaultSelectedQuery, action) {
   switch (action.type) {
   case SELECT_QUERY:
     return action.query;
   default:
-    return state || defaultState;
+    return state;
   }
 }
 

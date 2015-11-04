@@ -6,6 +6,7 @@ import * as MovieActions from '../actions/movies';
 
 //Data that needs to be called before rendering the component
 //This is used for server side rending via the fetchComponentDataBeforeRending() method
+// TODO rename to preload
 Explore.need = [
   MovieActions.fetchMovies
 ]

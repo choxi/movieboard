@@ -59,8 +59,7 @@ gulp.task('tdd', function (done) {
   new Karma({
     configFile: __dirname + '/karma.conf.js',
     reporters: [
-      'dots',
-      'coverage'
+      'dots'
     ]
   }, done).start();
 });
