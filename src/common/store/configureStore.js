@@ -4,16 +4,16 @@ import { reduxReactRouter } from 'redux-router';
 import thunk from 'redux-thunk';
 import createHistory from 'history/lib/createBrowserHistory';
 import createLogger from 'redux-logger';
-import promiseMiddleware from './promiseMiddleware';
 import rootReducer from '../reducers';
+import movieDB from '../middleware/movie_db';
 
 const middlewareBuilder = () => {
 
   let middleware = {};
-  let universalMiddleware = [thunk, promiseMiddleware];
+  let universalMiddleware = [thunk, movieDB];
   let allComposeElements = [];
 
-  if(process.browser){
+  if(process.browser) {
     if(['production', 'test'].indexOf(process.env.NODE_ENV) != -1){
       middleware = applyMiddleware(...universalMiddleware);
       allComposeElements = [
@@ -22,7 +22,7 @@ const middlewareBuilder = () => {
           createHistory
         })
       ]
-    }else{
+    } else {
       middleware = applyMiddleware(...universalMiddleware, createLogger());
       allComposeElements = [
         middleware,
@@ -32,15 +32,13 @@ const middlewareBuilder = () => {
         devTools()
       ]
     }
-  }else{
+  } else {
     middleware = applyMiddleware(...universalMiddleware);
     allComposeElements = [
       middleware
     ]
   }
-
   return allComposeElements;
-
 }
 
 const finalCreateStore = compose(...middlewareBuilder())(createStore);

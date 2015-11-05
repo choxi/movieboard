@@ -1,43 +1,30 @@
+import 'isomorphic-fetch'
 import { Schema, arrayOf, normalize } from 'normalizr'
 import { camelizeKeys } from 'humps'
-import 'isomorphic-fetch'
-
-// Extracts the next page URL from Github API response.
-function getNextPageUrl(response) {
-  const link = response.headers.get('link')
-  if (!link) {
-    return null
-  }
-
-  const nextLink = link.split(',').find(s => s.indexOf('rel="next"') > -1)
-  if (!nextLink) {
-    return null
-  }
-
-  return nextLink.split('')[0].slice(1, -1)
-}
+const qs = require('qs');
 
 const API_KEY = '8376ea4b657a9c1aa35ce251880afead';
 const API_ROOT = 'http://api.themoviedb.org/3'
 
 // Fetches an API response and normalizes the result JSON according to schema.
 // This makes every API response have the same shape, regardless of how nested it was.
-function callApi(endpoint, schema) {
-  const fullUrl = (endpoint.indexOf(API_ROOT) === -1) ? API_ROOT + endpoint : endpoint
+function callApi({endpoint, schema, params, page}) {
+  const fetchParams = Object.assign({}, params, {page, api_key: API_KEY});
+  let fullUrl = `${API_ROOT}${endpoint}?${qs.stringify(fetchParams)}`;
 
   return fetch(fullUrl)
-  .then(response => response.json())
-  .then(json => ({ json, response }))
-  .then(({ json, response }) => {
+    .then(response =>
+      response.json().then(json => ({ json, response }))
+    ).then(({ json, response }) => {
      if (!response.ok) {
-       return Promise.reject(json)
+       return Promise.reject(json);
      }
 
-     const camelizedJson = camelizeKeys(json)
-     const nextPageUrl = getNextPageUrl(response) || undefined
-     const normalizedData = normalize(camelizedJson, schema)
+     const camelizedJson = camelizeKeys(json);
+     const {page, totalPages, totalResults} = camelizedJson;
+     const normalizedData = normalize(camelizedJson.results, schema);
 
-     return Object.assign({}, normalizedData, { nextPageUrl })
+     return Object.assign({}, normalizedData, {page, totalPages, totalResults});
    })
 }
 
@@ -49,9 +36,7 @@ function callApi(endpoint, schema) {
 
 // Read more about Normalizr: https://github.com/gaearon/normalizr
 
-const movieSchema = new Schema('users', {
-  idAttribute: 'id'
-})
+const movieSchema = new Schema('movies')
 
 // Schemas for MOVIEDB API responses.
 export const Schemas = {
@@ -71,12 +56,11 @@ export default store => next => action => {
   }
 
   let { endpoint } = callAPI
-  const { schema, types } = callAPI
+  const { schema, types, page = 0, params = {}} = callAPI
 
   if (typeof endpoint === 'function') {
     endpoint = endpoint(store.getState())
   }
-
   if (typeof endpoint !== 'string') {
     throw new Error('Specify a string endpoint URL.')
   }
@@ -99,7 +83,7 @@ export default store => next => action => {
   const [ requestType, successType, failureType ] = types
   next(actionWith({ type: requestType }))
 
-  return callApi(endpoint, schema).then(
+  return callApi({endpoint, schema, params, page}).then(
     response => next(actionWith({
       response,
       type: successType

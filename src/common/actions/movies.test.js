@@ -1,9 +1,15 @@
-import {fetchMovies} from './movies';
-
+import * as Actions from './movies';
 
 describe('MovieActions', function() {
-  describe('fetchMovies', function() {
-    it('has a key based on path and params', function() {
+  describe('queries', function() {
+    it('search', function() {
+      const result = Actions.queries.search('Hello');
+      expect(result).to.contain.all.keys({
+        key: '/search/movie?query=Hello',
+        endpoint: '/search/movie',
+      });
+
+      expect(result.params).to.contain.all.keys({query: 'Hello'});
     });
   });
 });

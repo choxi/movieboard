@@ -1,6 +1,7 @@
 import {noop} from 'lodash'
 import React from 'react';
 import MoviePoster from '../MoviePoster';
+import Slider from '../Slider';
 import styles from './style.scss';
 
 export default class MovieGrid extends React.Component {
@@ -16,16 +17,23 @@ export default class MovieGrid extends React.Component {
       <div className='MovieGrid'>
         <div className="Controls">
           <div className="Controls-left">
-            <input
-              className='Search'
-              type="search"
-              placeholder='Search'
-              onChange={this.props.onSearch}
+            {this.props.leftControls()}
+          </div>
+          <div className="Controls-right">
+            {this.props.rightControls()}
+            <Slider
+              min={100}
+              max={500}
+              initialValue={this.state.posterWidth}
+              onChange={this.handleSliderChange.bind(this)}
             />
           </div>
         </div>
         <div className='items'>
           {this.props.movies.map(this.renderMovie.bind(this))}
+        </div>
+        <div className='LoadMore'>
+          <a onClick={this.props.onRequestMore}>Load More</a>
         </div>
       </div>
     );
@@ -40,17 +48,21 @@ export default class MovieGrid extends React.Component {
     );
   }
 
-  onSliderChange(value) {
+  handleSliderChange(value) {
     this.setState({posterWidth: value});
   }
 }
 
 MovieGrid.propTypes = {
   movies: React.PropTypes.array,
-  onSearch: React.PropTypes.function
+  onRequestMore: React.PropTypes.func,
+  leftControls: React.PropTypes.func,
+  rightControls: React.PropTypes.func,
 }
 
-MovieGrid.deafultProps = {
+MovieGrid.defaultProps = {
   movies: [],
-  onSearch: noop
+  onRequestMore: noop,
+  leftControls: noop,
+  rightControls: noop,
 }

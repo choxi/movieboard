@@ -22,12 +22,12 @@ export default class MoviePoster extends React.Component {
         style={{width: `${this.props.width}px`}}
         {...this.props}>
         <img
-          src={imageUrl(m.poster_path)}
+          src={imageUrl(m.posterPath)}
           width={this.props.width}
           height={this.props.width * IMAGE_ASPECT_RATION}
         />
         <h1>{m.title}</h1>
-        <p>{year(m.release_date)}</p>
+        <p>{year(m.releaseDate)}</p>
       </article>
     );
   }

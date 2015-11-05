@@ -35,14 +35,18 @@ export default function render(req, res, next) {
   });
 }
 
+// This function will traverse all components in the tree  and ask them for
+// their serverLoad array of actions.
+// It will then dispatch these actions to the store to get the resulting
+// promises. It will wait for these promises to resolve before rendering.
 function fetchComponentData(dispatch, components, params) {
   const needs = components.reduce( (prev, current) => {
     const parentNeeds = (current.WrappedComponent ?
-                         current.WrappedComponent.need : []);
+                         current.WrappedComponent.serverLoad : []);
 
-    return (current.need || []).concat(parentNeeds || []).concat(prev);
+    return (current.serverLoad || []).concat(parentNeeds || []).concat(prev);
   }, []);
-  const promises = needs.map(need => dispatch(need()));
+  const promises = needs.map(action => dispatch(action()));
   return Promise.all(promises);
 }
 

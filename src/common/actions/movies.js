@@ -1,84 +1,95 @@
-import {keys} from 'lodash';
-import moviedb from '../lib/moviedb';
+import {Schemas, CALL_API} from '../middleware/movie_db';
+import {map, keys, partial} from 'lodash';
 
-export const SELECT_QUERY = 'SELECT_QUERY';
-export const INVALIDATE_QUERY = 'INVALIDATE_QUERY';
-
-export const MOVIES_GET = 'MOVIES_GET';
-export const MOVIES_GET_REQUEST = 'MOVIES_GET_REQUEST';
-export const MOVIES_GET_SUCCESS = 'MOVIES_GET_SUCCESS';
-export const MOVIES_GET_FAILURE = 'MOVIES_GET_FAILURE';
-
-function queryPayload({path, params}) {
-  let key = queryKey({path, params});
-  return {path, params, key}
-}
-
-export function queryKey({path, params = {}}) {
+// Makes a uniqe key based on the endpoint and filters applied to it.
+// This is so we can pull the data out later and cache it.
+export function queryKey({endpoint, params = {}}) {
   let querystring = keys(params)
     .sort()
     .map(key => `${key}=${params[key]}`)
     .join('&');
 
   if(querystring.length > 0) {
-    return [path, querystring].join('?');
+    return [endpoint, querystring].join('?');
   } else {
-    return path;
+    return endpoint;
   }
 }
 
-export function selectQuery(query) {
+export function queryPayload({endpoint, params, key}) {
+  if(!key) {
+    key = queryKey({endpoint, params});
+  }
+
+  return {endpoint, params, key}
+}
+
+export const SELECT_MOVIE_QUERY = 'SELECT_MOVIE_QUERY';
+
+export function selectMovieQuery(endpoint, params){
   return {
-    type: SELECT_QUERY,
-    query: queryPayload(query),
-  };
+    type: SELECT_MOVIE_QUERY,
+    query: queryPayload(endpoint, params)
+  }
 }
 
-export function invalidateQuery(query) {
+export const MOVIE_GET_REQUEST = 'MOVIE_GET_REQUEST';
+export const MOVIE_GET_SUCCESS = 'MOVIE_GET_SUCCESS';
+export const MOVIE_GET_FAILURE = 'MOVIE_GET_FAILURE';
+
+// Fetches a page of starred repos by a particular user.
+// Relies on the custom API middleware defined in ../middleware/api.js.
+function fetchMovies(endpoint, params, page) {
   return {
-    type: INVALIDATE_QUERY,
-    query: query
-  };
-}
-
-export function fetchMovies(query = {path: '/discover/movie', params: {}}) {
-  return {
-    type: MOVIES_GET,
-    query: queryPayload(query),
-    promise: moviedb(query.path, query.params)
-  }
-}
-
-function shouldFetchMovies(state, query) {
-  const movies = state.moviesByQuery[queryKey(query)];
-  if (!movies) {
-    return true;
-  } else if (movies.isFetching) {
-    return false;
-  } else {
-    return movies.didInvalidate;
-  }
-}
-
-export function discover(params = {}) {
-  return (dispatch) => {
-    let query = queryPayload({path: '/discover/movie', params})
-    dispatch(selectQuery(query))
-  }
-}
-
-export function search(text) {
-  return (dispatch) => {
-    let query = queryPayload({path: '/search/movie', params: {query: text}})
-    dispatch(selectQuery(query))
-  }
-}
-
-export function fetchMoviesIfNeeded(query) {
-
-  return (dispatch, getState) => {
-    if (shouldFetchMovies(getState(), query)) {
-      return dispatch(fetchMovies(query));
+    key: queryKey({endpoint, params}),
+    [CALL_API]: {
+      types: [ MOVIE_GET_REQUEST, MOVIE_GET_SUCCESS, MOVIE_GET_FAILURE ],
+      endpoint: endpoint,
+      params: params,
+      page: page,
+      schema: Schemas.MOVIE_ARRAY,
     }
-  };
+  }
+}
+
+// Fetches a page of movies.
+// Bails out if page is cached and user didn’t specifically request next page.
+// Relies on Redux Thunk middleware.
+export function loadMovies({endpoint, params}, nextPage) {
+  return (dispatch, getState) => {
+    let key = queryKey({endpoint, params});
+
+    const {
+      page = 0
+    } = getState().pagination.moviesByQuery[key] || {}
+
+    // if pageNumber
+    if (page > 0 && !nextPage) {
+      return null
+    }
+
+    return dispatch(fetchMovies(endpoint, params, page + 1))
+  }
+}
+
+function buildQuery(builder) {
+  return (...args) => {
+    return queryPayload(builder(...args))
+  }
+}
+
+export const queries = {
+  search: buildQuery((text) => {
+    return {
+      endpoint: '/search/movie',
+      params: {query: text},
+    }
+  }),
+
+  discover: buildQuery((filter) => {
+    return {
+      endpoint: '/discover/movie',
+      params: filter,
+    }
+  }),
 }

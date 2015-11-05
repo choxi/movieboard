@@ -42,4 +42,25 @@
       padding: 10px
     }
   }
+
+  .LoadMore {
+    text-align: center;
+
+    a {
+      cursor: pointer;
+      display: inline-block;
+      padding: 10px 20px;
+      border: solid 1px #999;
+
+      &:hover {
+        background: #999;
+        color: black;
+      }
+
+      &:active {
+        background: #fff;
+        color: black;
+      }
+    }
+  }
 }

@@ -48,6 +48,13 @@ var common = {
             }
           }
         }
+      },
+
+      // for certain libs
+      {
+        test: /\.js?$/,
+        loader: 'babel',
+        include: [path.resolve(ROOT_PATH, 'node_modules/qs')],
       }
     ]
   }
