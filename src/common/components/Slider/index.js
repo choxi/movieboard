@@ -3,6 +3,14 @@ import ReactDOM from 'react-dom';
 import { noop } from 'lodash';
 import style from './style.scss';
 
+/**
+ * @name Slider
+ * @prop {string} [lang] - Langage that code is written in (for syntax highlighting).
+ *
+ * @example
+ * <Slider initialValue={ 0 } />
+ *
+ */
 export default class Slider extends React.Component {
   constructor(props) {
     super(props);
