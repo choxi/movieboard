@@ -4,6 +4,14 @@ import MoviePoster from '../MoviePoster';
 import Slider from '../Slider';
 import styles from './style.scss';
 
+/**
+ * @name MovieGrid
+ * @prop {string} [leftControl]
+ *
+ * @example
+ * <MovieGrid lang="javascript">{ code }</MovieGrid>
+ *
+ */
 export default class MovieGrid extends React.Component {
   constructor() {
     super();
