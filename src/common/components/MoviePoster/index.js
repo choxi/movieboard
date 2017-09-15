@@ -19,7 +19,16 @@ function year(releaseString = '') {
  * @prop {Object} width - The width of the poster img
  *
  * @example
- * <MoviePoster />
+ * let props = {
+ *   width: 400,
+ *   movie: {
+ *     title: "The Matrix",
+ *     releaseDate: "1999-3-31",
+ *     posterPath: "http://www.impawards.com/1999/matrix_ver1_xlg.html"
+ *   }
+ * }
+ *
+ * <MoviePoster movie={ props.movie } width={ props.width } />
  *
  */
 export default class MoviePoster extends React.Component {
