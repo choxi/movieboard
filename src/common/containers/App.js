@@ -3,9 +3,12 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import style from './App.scss';
+import Slider from '../components/Slider';
 
 class App extends Component {
   render() {
+    return <Slider initialValue={ 0 } />
+
     return (
       <div className='App'>
         <header className='MainHeader'>

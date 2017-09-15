@@ -38,8 +38,9 @@ export default class Slider extends React.Component {
     let {clientX, clientY} = e;
     let {offsetLeft, offsetWidth} = node;
     let xPercent = (clientX - offsetLeft) / offsetWidth;
-    this.state.value = normalize(xPercent, this.props.min, this.props.max);
-    this.props.onChange(this.state.value);
+    this.setState({ value: normalize(xPercent, this.props.min, this.props.max) }, () => {
+      this.props.onChange(this.state.value);
+    });
   }
 
   calculateLeft() {
@@ -92,6 +93,6 @@ function normalize(floatValue, min, max) {
   let range = max - min;
   let normalizedValue = floatValue * range + min;
   // cleverly restrict the value be between the min and max
-  return [min, normalizedValue, max].sort()[1];
+  return [min, normalizedValue, max].sort(function(a,b) { return a - b })[1];
 }
 
