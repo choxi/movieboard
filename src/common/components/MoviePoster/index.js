@@ -27,7 +27,7 @@ function year(releaseString = '') {
  *     posterPath: "http://www.impawards.com/1999/matrix_ver1_xlg.html"
  *   }
  * }
- * <MoviePoster { ...props } />
+ * <MoviePoster movie={ props.movie } width={ props.width } />
  *
  */
 export default class MoviePoster extends React.Component {
