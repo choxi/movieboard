@@ -83,7 +83,6 @@ if(process.env.NODE_ENV === 'production') {
     entry: CLIENT_PATH,
     plugins: [
       new Clean(['dist']),
-      new webpack.optimize.OccurenceOrderPlugin(),
       new webpack.DefinePlugin({
         'process.env': {
           'NODE_ENV': JSON.stringify('production')
