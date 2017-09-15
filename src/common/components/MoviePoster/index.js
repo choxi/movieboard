@@ -26,7 +26,7 @@ function year(releaseString = '') {
  *     releaseDate: "1999-3-31",
  *     posterPath: "http://www.impawards.com/1999/matrix_ver1_xlg.html"
  *   }
- * }
+ * };
  *
  * <MoviePoster movie={ props.movie } width={ props.width } />
  *
