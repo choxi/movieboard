@@ -12,6 +12,7 @@
     "lint": "eslint src",
     "test": "gulp test"
   },
+  "babel": {},
   "author": "",
   "license": "ISC",
   "devDependencies": {
