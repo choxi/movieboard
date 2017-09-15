@@ -24,7 +24,7 @@ function year(releaseString = '') {
  *   movie: {
  *     title: "The Matrix",
  *     releaseDate: "1999-3-31",
- *     posterPath: "http://www.impawards.com/1999/matrix_ver1_xlg.html"
+ *     posterPath: "q0R4crx2SehcEEQEkYObktdeFy.jpg"
  *   }
  * };
  *

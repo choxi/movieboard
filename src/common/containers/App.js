@@ -7,8 +7,6 @@ import Slider from '../components/Slider';
 
 class App extends Component {
   render() {
-    return <Slider initialValue={ 0 } />
-
     return (
       <div className='App'>
         <header className='MainHeader'>
