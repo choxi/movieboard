@@ -24,8 +24,8 @@ function year(releaseString = '') {
  * let props = {
  *   width: 400,
  *   movie: {
- *     title: "The Matrix",
- *     releaseDate: "1999-3-31",
+ *     title: "Minions",
+ *     releaseDate: "2015-6-11",
  *     posterPath: "q0R4crx2SehcEEQEkYObktdeFy.jpg"
  *   }
  * };
