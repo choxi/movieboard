@@ -7,6 +7,8 @@ import style from './style.scss';
  * @name Slider
  * @prop {string} [lang] - Langage that code is written in (for syntax highlighting).
  *
+ * @background #222
+ *
  * @example
  * <Slider initialValue={ 0 } />
  *
