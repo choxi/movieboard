@@ -26,7 +26,7 @@ function year(releaseString = '') {
  *     releaseDate: "1999-3-31",
  *     posterPath: "q0R4crx2SehcEEQEkYObktdeFy.jpg"
  *   }
- * }
+ * };
  *
  * <MoviePoster movie={ props.movie } width={ props.width } />
  *
