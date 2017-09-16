@@ -18,6 +18,8 @@ function year(releaseString = '') {
  * @prop {Object} movie - The movie object
  * @prop {Object} width - The width of the poster img
  *
+ * @background #333
+ *
  * @example
  * let props = {
  *   width: 400,
