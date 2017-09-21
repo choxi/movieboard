@@ -30,7 +30,7 @@ function year(releaseString = '') {
  *   }
  * };
  *
- * export default <MoviePoster movie={ props.movie } width={ props.width } />
+ * <MoviePoster movie={ props.movie } width={ props.width } />
  *
  */
 export default class MoviePoster extends React.Component {
