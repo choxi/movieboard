@@ -10,7 +10,7 @@ import style from './style.scss';
  * @background #222
  *
  * @example
- * export default <Slider initialValue={ 0 } />
+ * <Slider initialValue={ 0 } />
  *
  */
 export default class Slider extends React.Component {
